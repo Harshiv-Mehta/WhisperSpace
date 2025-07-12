@@ -4,15 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Shared Whispers</title>
-  <!-- Updated Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand&family=Shadows+Into+Light&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand&family=Lora&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
     <h1>Shared Whispers</h1>
     <p>These whispers appear in random order to protect everyone's voice.</p>
-    <button id="toggleTheme">🌙 Toggle Theme</button>
   </header>
 
   <main>
@@ -24,8 +22,24 @@
   </main>
 
   <footer>
-    <p>"Some things need to be spoken, even if no one knows your name."</p>
+    <p>“Let every whisper be a voice heard by the void.”</p>
   </footer>
+
+  
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCRZ0SIZTvM-VQYdcFxsk38I5sqBLK_cbI",
+      authDomain: "whisperspace-506de.firebaseapp.com",
+      databaseURL: "https://whisperspace-506de-default-rtdb.firebaseio.com",
+      projectId: "whisperspace-506de",
+      storageBucket: "whisperspace-506de.appspot.com",
+      messagingSenderId: "78482236324",
+      appId: "1:78482236324:web:4f690f3adfbd7807085731"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
