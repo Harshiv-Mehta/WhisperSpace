@@ -17,9 +17,9 @@
 
 ## 🧪 Demo
 
-[🔗 View Live Website](https://your-username.github.io/whisperspace/)
+https://harshiv-mehta.github.io/WhisperSpace/
 
-> *(Replace the above link with your actual GitHub Pages URL)*
+
 
 ## 📁 Project Structure
 
