@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const confirmation = document.getElementById("confirmation");
   const charCount = document.getElementById("charCount");
 
+  
   if (whisperInput && charCount) {
     whisperInput.addEventListener("input", () => {
       const remaining = 300 - whisperInput.value.length;
@@ -47,21 +48,24 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const whisperObj = {
-        id: Date.now(),
         text: userWhisper,
         replies: [],
         timestamp: getFormattedTime()
       };
 
-      
-      db.ref("whispers").push(whisperObj);
-
-      showMessage("Your whisper has been sent into the ether.", false);
-      whisperInput.value = "";
-      charCount.textContent = "300 characters left";
+      db.ref("whispers").push(whisperObj, error => {
+        if (error) {
+          showMessage("Something went wrong. Try again.", true);
+        } else {
+          showMessage("Your whisper has been sent into the ether.", false);
+          whisperInput.value = "";
+          charCount.textContent = "300 characters left";
+        }
+      });
     });
   }
 
+  
   function showMessage(msg, isError) {
     confirmation.textContent = msg;
     confirmation.style.color = isError ? "#d9534f" : "#4caf50";
@@ -72,11 +76,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-
 document.addEventListener("DOMContentLoaded", function () {
   const whisperWall = document.getElementById("whisperWall");
   const loadingMsg = document.getElementById("loadingMsg");
 
+  
   if (!whisperWall || !db) return;
 
   
@@ -90,32 +94,32 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const whispers = Object.entries(data).map(([key, value]) => ({ key, ...value }));
-    // Shuffle whispers
-    whispers.sort(() => Math.random() - 0.5);
+    whispers.sort(() => Math.random() - 0.5); // Shuffle for anonymity
 
     whispers.forEach((whisper) => {
       const whisperBlock = document.createElement("div");
       whisperBlock.className = "whisper";
 
+      
       whisperBlock.innerHTML = `
         <p>🌫️ ${whisper.text}</p>
         <small style="color:#888;">🕒 ${whisper.timestamp || "Unknown time"}</small>
         <textarea placeholder="Reply anonymously..."></textarea>
-        <button>Send Reply</button>
+        <button class="reply-btn">Send Reply</button>
         <button class="delete-whisper">🗑️ Delete Whisper</button>
         <div class="replies">
           ${whisper.replies?.map((r, i) =>
             `<p>💬 ${r} <button class="delete-reply" data-index="${i}">x</button></p>`
-          ).join('') || ''}
+          ).join("") || ""}
         </div>
       `;
 
-      const replyBtn = whisperBlock.querySelector("button");
+      const replyBtn = whisperBlock.querySelector(".reply-btn");
       const replyBox = whisperBlock.querySelector("textarea");
       const repliesDiv = whisperBlock.querySelector(".replies");
       const deleteWhisperBtn = whisperBlock.querySelector(".delete-whisper");
 
-      // Handle reply
+      
       replyBtn.addEventListener("click", () => {
         const reply = replyBox.value.trim();
         if (!reply) return;
@@ -123,16 +127,19 @@ document.addEventListener("DOMContentLoaded", function () {
           alert("Please keep replies respectful.");
           return;
         }
-        if (whisper.replies?.length >= 5) {
+        if ((whisper.replies?.length || 0) >= 5) {
           alert("This whisper has reached its reply limit.");
           return;
         }
 
         const updatedReplies = whisper.replies || [];
         updatedReplies.push(reply);
-        db.ref(`whispers/${whisper.key}`).update({ replies: updatedReplies });
-
-        replyBox.value = "";
+        db.ref(`whispers/${whisper.key}`).update({ replies: updatedReplies }, () => {
+          const replyElement = document.createElement("p");
+          replyElement.innerHTML = `💬 ${reply} <button class="delete-reply" data-index="${updatedReplies.length - 1}">x</button>`;
+          repliesDiv.appendChild(replyElement);
+          replyBox.value = "";
+        });
       });
 
       
@@ -142,15 +149,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
-      
-      const deleteReplyBtns = whisperBlock.querySelectorAll(".delete-reply");
-      deleteReplyBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-          const i = btn.dataset.index;
+     
+      whisperBlock.addEventListener("click", (e) => {
+        if (e.target.classList.contains("delete-reply")) {
+          const index = parseInt(e.target.dataset.index);
           const updatedReplies = whisper.replies || [];
-          updatedReplies.splice(i, 1);
+          updatedReplies.splice(index, 1);
           db.ref(`whispers/${whisper.key}`).update({ replies: updatedReplies });
-        });
+        }
       });
 
       whisperWall.appendChild(whisperBlock);
