@@ -11,13 +11,13 @@
   <header>
     <h1>Whisperspace</h1>
     <p>A place to share what's unspoken, anonymously and freely.</p>
-    <button id="toggleTheme">🌙 Toggle Theme</button>
   </header>
+
   <main>
     <section id="share">
       <label for="whisper" class="sr-only">Your Whisper</label>
       <textarea id="whisper" placeholder="Write your thought here..." maxlength="300" rows="6"></textarea>
-      <div id="charCount">0/300</div>
+      <div id="charCount">300 characters left</div>
       <button id="sendBtn" type="button">Send Whisper</button>
       <div id="confirmation"></div>
       <div class="linkBox">
@@ -25,9 +25,26 @@
       </div>
     </section>
   </main>
+
   <footer>
     <p>"Some things need to be spoken, even if no one knows your name."</p>
   </footer>
+
+  
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCRZ0SIZTvM-VQYdcFxsk38I5sqBLK_cbI",
+      authDomain: "whisperspace-506de.firebaseapp.com",
+      databaseURL: "https://whisperspace-506de-default-rtdb.firebaseio.com",
+      projectId: "whisperspace-506de",
+      storageBucket: "whisperspace-506de.appspot.com",
+      messagingSenderId: "78482236324",
+      appId: "1:78482236324:web:4f690f3adfbd7807085731"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
